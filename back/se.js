@@ -1,6 +1,8 @@
 import Groq from "groq-sdk";
 import { MongoClient } from "mongodb";
 import { Pinecone } from "@pinecone-database/pinecone";
+import 'dotenv/config';
+
 // import { embn } from "./set.js";
 const client = new MongoClient(process.env.MONGO_URI);
 await client.connect();
