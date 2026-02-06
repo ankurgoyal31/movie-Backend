@@ -11,6 +11,7 @@
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
     "fuse.js": "^7.1.0",
+    "groq-sdk": "^0.37.0",
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^6.21.0",
     "ollama": "^0.6.3"
