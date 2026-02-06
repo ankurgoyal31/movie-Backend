@@ -6,9 +6,13 @@
     "start": "node back/sr.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "mongodb": "^6.7.0"
+    "@pinecone-database/pinecone": "^7.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "fuse.js": "^7.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^6.21.0",
+    "ollama": "^0.6.3"
   }
 }
