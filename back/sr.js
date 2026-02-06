@@ -22,7 +22,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const dataset = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "../../cache.json"), "utf-8")
+  fs.readFileSync(path.join(__dirname,  "../cache.json"), "utf-8")
 );
 
    const app = express(); 
