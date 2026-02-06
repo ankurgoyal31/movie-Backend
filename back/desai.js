@@ -1,6 +1,6 @@
 import Groq from "groq-sdk";
 import { MongoClient } from "mongodb";
-import { embn } from "./set.js";
+// import { embn } from "./set.js";
 const client = new MongoClient(process.env.MONGO_URI);
 await client.connect();
 const db =  client.db("movie"); 
