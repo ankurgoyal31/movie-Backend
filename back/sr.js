@@ -50,6 +50,9 @@ const cache = new Map();
 console.log("total length->",dataset.length);
 // function call(){
   try{ 
+    app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
  app.post("/movies", async (req, res) => {
   try {
     const { it } = req.body; 
@@ -67,7 +70,9 @@ console.log("total length->",dataset.length);
   }
 });
 console.log("ENV KEY =>", process.env.YOUTUBE_API_KEY);
-
+    
+ 
+    
 app.post("/search",async(req,res)=>{
    const data = await collection.findOne({movie:req.body.p})
   if(data){
