@@ -40,7 +40,7 @@ for(let item of coll){
     return []
 }
 let u = res.map((item)=>item.metadata?.title)
-let hd = await collect.find({title:{$in:u}}).toArray()
+let hd = await collect.find({title:{$in:u}},{projection:{  title: 1,original_title: 1,overview: 1,act: 1,release_date: 1,original_language: 1,poster_path:1,pagenumber:1,}}).toArray()
 console.log(hd)
 return hd
  }
