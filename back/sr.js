@@ -47,10 +47,8 @@ const ai = db.collection("ai")
 const user = db.collection("user");
 const cache = new Map(); 
 
-console.log("total length->",dataset.length);
-// function call(){
-  try{ 
-    app.get("/health", (req, res) => {
+ try{ 
+      app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
  app.post("/movies", async (req, res) => {
@@ -61,7 +59,7 @@ console.log("total length->",dataset.length);
     }
     // const data = await collect.find({ pagenumber: Number(it) }).toArray();
     const data = dataset.filter((item)=>item.pagenumber==Number(it));
-    console.log(data)
+    console.log(data) 
     cache.set(it, data);
     return res.status(200).json(data);
   } catch (err) {
@@ -70,9 +68,7 @@ console.log("total length->",dataset.length);
   }
 });
 console.log("ENV KEY =>", process.env.YOUTUBE_API_KEY);
-    
- 
-    
+
 app.post("/search",async(req,res)=>{
    const data = await collection.findOne({movie:req.body.p})
   if(data){
@@ -82,7 +78,7 @@ app.post("/search",async(req,res)=>{
   if (store.has(req.body.p)) {
    return res.send(store.get(req.body.p));
 }
-   if(!store.has(req.body.p)){ 
+   if(!store.has(req.body.p)){
  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q=${encodeURIComponent(`${req.body.p} full movie`)}&key=${process.env.YOUTUBE_API_KEY}`;
   const r = await fetch(url);
   if (!r.ok) throw new Error("YT search failed");
@@ -107,7 +103,7 @@ app.post("/search",async(req,res)=>{
   }
   // else{
   //   throw new Error("fuck....")
-  // }
+  // } 
  })
  app.post("/recommend", async (req, res) => {
    try {
@@ -115,14 +111,14 @@ app.post("/search",async(req,res)=>{
     if(d){
 const data = await runEmbedding(d.embed);
 const titles = data.map(it => it.metadata.title);
-const movies = await collect.find({ title: { $in: titles } }).toArray();
+const movies = await collect.find({ title: { $in: titles}} ,{projection:{title: 1,overview: 1,release_date: 1,poster_path:1}}).toArray();
 let sa = movies.filter((items)=>items.title)
- const uniqueMovies = [...new Map(sa.map(m => [`${m.title}-${m.year}-${m.overview}`,m]) ).values()].slice(0,22);
+ const uniqueMovies = [...new Map(sa.map(m => [`${m.title}-${m.release_date}-${m.overview}`,m]) ).values()].slice(0,22);
    return  res.send(uniqueMovies);
     }
   } catch (e) { 
     res.status(500).json({ error: "AI failed" });
-  }
+  } 
 }); 
 // let data = [];
 // async function get(){
@@ -211,12 +207,12 @@ app.post("/similier", async (req, res) => {
       ).values()
     ].slice(0, 30);
 if(data.length==0){ 
-     return res.json({ok:false,Array:[]}); // 🔥 EMPTY ARRAY 
+     return res.json({ok:false,Array:[]}); 
 }
     return res.json(uniqueMovies);
   } catch (err) {
     console.error(err);
-    return res.json({ok:false,Array:[]}); // 🔥 EMPTY ARRAY
+    return res.json({ok:false,Array:[]}); 
   }
 });
 app.post("/addM",async(req,res)=>{
@@ -226,20 +222,32 @@ app.post("/addM",async(req,res)=>{
   }
 await add.insertOne({email:req.body.em,movie:req.body.m,overvie:req.body.n,img:req.body.o,orgt:req.body.p,famus:req.body.q,rating:req.body.r,act:req.body.s,orllang:req.body.t,date:req.body.u});
 })
-app.post("/watchl",async(req,res)=>{
-  try{
-    let data = await add.find({email:req.body.em}).toArray()
-    return res.send(data)
-  } catch(err){
-return "something went wrong....."
+app.post("/watchl", async (req, res) => {
+  try {
+    let data = await add.find({ email: req.body.em }, { projection: { date: 1, img: 1, movie: 1 } }).toArray();
+if (!data.length) {
+      return res.status(200).json([]); 
+    }
+     return res.status(200).json(data);
+} catch (err) {
+    console.log("watchl error:", err);
+    return res.status(500).json({ error: "Server error" }); 
   }
-})
+});
 
-app.post("/svs",async(req,res)=>{
-  let data = await watch.find({email:req.body.em}).toArray()
-  return res.send(data)
-})
+app.post("/svs", async (req, res) => {
+  try {
+    let data = await watch.find({ email: req.body.em }, { projection: { movie: 1, watchTime: 1 } }).toArray();
+    if (!data.length) {
+      return res.status(200).json([]); 
+    }
+    return res.status(200).json(data);
 
+  } catch (err) {
+    console.log("svs error:", err);
+    return res.status(500).json({ error: "Server error" }); 
+  }
+});
 app.post("/del", async (req, res) => {
 await add.deleteOne({_id: new ObjectId(req.body.id), });
 return res.send({ ok: true });
@@ -328,4 +336,4 @@ app.listen(3000, () => {
 });  
    }catch(err){
      console.log("server crash.....")
-  } 
+  }  
